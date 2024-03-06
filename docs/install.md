@@ -31,6 +31,8 @@ cd ..  # go back to the root directory of the project
 python -m pip install 'git+https://github.com/facebookresearch/detectron2.git'
 ```
 
+We also provide a `environment.yml` file which lists all the packages in our final environment.
+
 I sometimes encounter a weird bug where `Detectron2` cannot run on types of GPUs different from the one I compile it on (e.g., if I compile it on RTX6000 GPUs, I cannot use it on A40 GPUs).
 To avoid this issue, go to [coco_eval.py](../utils/evaluation/prophesee/metrics/coco_eval.py) and set the `compile_gpu` to the GPU you compile it (the program will not import `Detectron2` when detecting a different GPUs in use).
 
@@ -55,6 +57,20 @@ Please download the pre-processed datasets from RVT:
 </tbody></table>
 
 After downloading and unzipping the datasets, soft link Gen1 to `./datasets/gen1` and 1Mpx to `./datasets/gen4`.
+
+### Data Splits
+
+To simulate the weakly-/semi-supervised learning settings, we need to sub-sample labels from the original dataset.
+An important thing is that we need to keep the data split the same across experiments.
+- For semi-supervised setting where we keep the labels for some sequences while making other sequences completely unlabeled, it is relatively easy.
+  We just sort the name of event sequences so that their order will be deterministic across runs, and select unlabeled sequences from it.
+- For weakly-supervised setting where we sub-sample the labels for all sequences, it is a bit tricky because there are two mode of data sampling in the codebase, and they pre-process events in different ways.
+  To have a consistent data split, we create a split file for each setting, which are stored [here](../data/genx_utils/splits/).
+  If you want to explore new experimental settings, remember to create your own split files and read from them [here](../data/genx_utils/dataset_streaming.py).
+
+All results in the paper are averaged over three different splits (we offset the index when sub-sampling the data).
+Overall, the performance variations are very small across different splits.
+Therefore, we only release the split files, config files, and pre-trained weights for the first variant we experimented with.
 
 ## Pre-trained Weights
 

@@ -67,13 +67,13 @@ The entire eval/test sets are also soft-linked.
 
 ```Bash
 # Gen1 (11376it, ~6h predict + ~30min saving on a T4 GPU)
-python predict.py model=pseudo_labeler dataset=gen1 dataset.path=./datasets/gen1/ \
+python predict.py model=pseudo_labeler dataset=gen1x0.01_ss dataset.path=./datasets/gen1/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss.ckpt" \
   hardware.gpus=0 +experiment/gen1="small.yaml" model.postprocess.confidence_threshold=0.01 \
   tta.enable=True save_dir=./datasets/pseudo_gen1/gen1x0.01_ss-1round/train
 
 # Gen4 (27044it, ~9.5h predict + ~15min saving on a T4 GPU)
-python predict.py model=pseudo_labeler dataset=gen4 dataset.path=./datasets/gen4/ \
+python predict.py model=pseudo_labeler dataset=gen4x0.01_ss dataset.path=./datasets/gen4/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen4-WSOD/rvt-s-gen4x0.01_ss.ckpt" \
   hardware.gpus=0 +experiment/gen4="small.yaml" model.postprocess.confidence_threshold=0.01 \
   tta.enable=True save_dir=./datasets/pseudo_gen4/gen4x0.01_ss-1round/train
