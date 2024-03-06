@@ -3,10 +3,11 @@ from typing import Tuple
 from omegaconf import OmegaConf, DictConfig
 
 from .yolo_pafpn import YOLOPAFPN
-from ...yolox.models.yolo_head import YOLOXHead, YOLOXHeadSSOD
+from ...yolox.models.yolo_head import YOLOXHead
 
 
 def build_yolox_head(head_cfg: DictConfig, in_channels: Tuple[int, ...], strides: Tuple[int, ...], ssod: bool = False):
+    assert not ssod  # legacy code already removed, the flag is useless now
     head_cfg_dict = OmegaConf.to_container(head_cfg, resolve=True, throw_on_missing=True)
     head_cfg_dict.pop('name')
     head_cfg_dict.pop('version', None)
@@ -14,7 +15,7 @@ def build_yolox_head(head_cfg: DictConfig, in_channels: Tuple[int, ...], strides
     head_cfg_dict.update({"strides": strides})
     compile_cfg = head_cfg_dict.pop('compile', None)
     head_cfg_dict.update({"compile_cfg": compile_cfg})
-    module = YOLOXHeadSSOD if ssod else YOLOXHead
+    module = YOLOXHead
     return module(**head_cfg_dict)
 
 

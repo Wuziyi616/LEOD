@@ -1,0 +1,14 @@
+defaults:
+  - gen1
+
+ratio: -1  # we now use all the pesudo labels
+val_ratio: 0.5
+
+path: ./datasets/pseudo_gen1/gen1x0.01_ss-1round
+
+# time-flip data augmentation
+data_augmentation:
+  random:
+    prob_tflip: 0.5
+  stream:
+    prob_tflip: 0.5

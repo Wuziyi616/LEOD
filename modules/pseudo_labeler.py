@@ -443,7 +443,7 @@ class PseudoLabeler(Module):
         # Test-Time-Augmentation (TTA) to enhance the generated label quality
         self.tta_cfg = self.full_config.tta
         if self.tta_cfg.enable:
-            assert 'tta' in self.save_dir.lower(), 'tta must be in save_dir'
+            print('Using TTA in pseudo label generation.')
 
         # record metrics measuring pseudo label quality
         self.metrics: Dict[str, AverageMeter] = {}

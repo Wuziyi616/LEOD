@@ -5,8 +5,6 @@ from modules.data.genx import DataModule as genx_data_module
 from modules.detection import Module as rnn_det_module
 from modules.utils.tta import TTAModule
 from modules.pseudo_labeler import PseudoLabeler
-from modules.stac import STACModule
-from modules.soft_teacher import SoftTeacherModule
 
 
 def fetch_model_module(config: DictConfig) -> pl.LightningModule:
@@ -18,10 +16,6 @@ def fetch_model_module(config: DictConfig) -> pl.LightningModule:
         return rnn_det_module(config)
     elif model_str == 'pseudo_labeler':
         return PseudoLabeler(config)
-    elif model_str == 'stac':
-        return STACModule(config)
-    elif model_str == 'soft_teacher':
-        return SoftTeacherModule(config)
     raise NotImplementedError
 
 

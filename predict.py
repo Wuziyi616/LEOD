@@ -28,7 +28,6 @@ from config.modifier import dynamically_modify_train_config
 from data.genx_utils.labels import ObjectLabels
 from data.utils.misc import read_npz_labels, read_ev_repr, get_ev_dir, get_ev_h5_fn
 from modules.utils.fetch import fetch_data_module, fetch_model_module
-from draw import plot_scores_vs_ious
 
 from nerv.utils import load_obj, dump_obj, glob_all
 
@@ -227,12 +226,6 @@ def main(config: DictConfig):
         results = {k: np.array(v) for k, v in module.results.items()}
         f = os.path.join(save_dir, 'model_results.pkl')
         dump_obj(results, f)
-        plot_scores_vs_ious(
-            f,
-            module.dst_name,
-            save_path=os.path.join(save_dir, 'model_results.png'),
-            show=False)
-        print(f'Plot saved to {os.path.join(save_dir, "model_results.png")}.')
 
     # handle corner case when one seq doesn't have any pse-labels
     # then it won't be loaded --> won't be saved --> causing a wrong num_seq

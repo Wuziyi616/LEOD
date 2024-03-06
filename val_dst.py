@@ -26,46 +26,11 @@ from modules.utils.fetch import fetch_data_module
 from modules.utils.ssod import evaluate_label, filter_w_thresh
 from data.genx_utils.labels import ObjectLabels
 from data.utils.types import DataType
-from utils.evaluation.prophesee.evaluator import get_labelmap
-from modules.pseudo_labeler import EventSeqData
 
 from nerv.utils import AverageMeter, glob_all
 
 empty_box = torch.zeros((0, 8)).float()
 empty_box = ObjectLabels(empty_box, input_size_hw=(360, 640))
-
-
-def filter_by_track(obj_labels, pse_cfg, labelmap):
-    """Filter with tracklet length."""
-    L = pse_cfg.min_track_len
-    if L <= 0:
-        return obj_labels, None, None
-    labels, frame_idx = [], []
-    for idx, obj_label in enumerate(obj_labels):
-        if obj_label is None:
-            continue
-        labels.append(obj_label)
-        frame_idx.append(idx)
-    # forward tracking
-    remove_idx, _ = EventSeqData._track(labels, frame_idx, min_track_len=L)
-    # remove by setting class_id to 1024 (cannot use -1 as it is uint32)
-    bbox_idx = 0
-    num_bbox = {cls_name: 0 for cls_name in labelmap}
-    num_remove_bbox = {cls_name: 0 for cls_name in labelmap}
-    for idx, obj_label in enumerate(obj_labels):
-        if obj_label is None:
-            continue
-        obj_labels[idx].torch_()
-        new_class_id = copy.deepcopy(obj_label.class_id)
-        for i in range(len(obj_label)):
-            cls_id = int(new_class_id[i].item())
-            num_bbox[labelmap[cls_id]] += 1
-            if bbox_idx in remove_idx:
-                new_class_id[i] = pse_cfg.ignore_label
-                num_remove_bbox[labelmap[cls_id]] += 1
-            bbox_idx += 1
-        obj_labels[idx].class_id = new_class_id
-    return obj_labels, num_bbox, num_remove_bbox
 
 
 def filter_bbox(pred, obj_thresh=0.9, cls_thresh=0.9, ignore_label=1024):
@@ -91,9 +56,6 @@ def eval_one_seq(full_cfg, pse_batch, batch, skip_gt=False):
     # get labels
     pse_obj_labels = pse_data[DataType.OBJLABELS_SEQ]
     pse_obj_labels = [lbl[0] for lbl in pse_obj_labels]
-    labelmap = get_labelmap(dst_name=dst_cfg.name)
-    pse_obj_labels, num_bbox, num_remove_bbox = filter_by_track(
-        pse_obj_labels, full_cfg.model.pseudo_label, labelmap=labelmap)
     # loaded GT and skipped GT
     loaded_obj_labels = data[DataType.OBJLABELS_SEQ]
     loaded_obj_labels = [lbl[0] for lbl in loaded_obj_labels]
@@ -134,10 +96,6 @@ def eval_one_seq(full_cfg, pse_batch, batch, skip_gt=False):
         pred_mask,
         num_cls=dst_cfg.num_classes,
         prefix='ssod/')
-    if num_remove_bbox is not None:
-        for name in labelmap:
-            metrics[f'track/num_bbox_{name}'] = num_bbox[name]
-            metrics[f'track/num_remove_bbox_{name}'] = num_remove_bbox[name]
     return metrics
 
 
@@ -193,9 +151,6 @@ def eval_one_dataset(config: DictConfig):
                 continue
             if k not in metrics_dict:
                 metrics_dict[k] = AverageMeter()
-            if k.startswith('track/'):
-                metrics_dict[k].update(v, n=1)
-                continue
             cls_name = k.split('_')[-1]  # xxx_car
             metrics_dict[k].update(v, n=metrics[f'num_{cls_name}'])
     print('------------ Evaluation ------------')
