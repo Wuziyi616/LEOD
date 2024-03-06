@@ -36,7 +36,10 @@ The mp4 files will be saved to `./vis/gen1_rnndet_small/pred/`.
 We pause the event sequences for 0.5s at every labeled frames for better see the detection results.
 The predicted bboxes (with predicted cls and obj scores) are in green, while the GT bboxes are in black.
 The frame index and timestamp are also shown at the top-left corner.
-See [gen1-video.mp4](../assets/gen1-video.mp4) for an example.
+
+
+https://github.com/Wuziyi616/LEOD/assets/37072215/ae898b28-0b8a-4311-a9fd-6271ce54d1b6
+
 
 ## Training
 
