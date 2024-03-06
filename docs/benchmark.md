@@ -33,6 +33,10 @@ python vis_pred.py model=rnndet dataset=gen1 dataset.path=./datasets/gen1/ \
 ```
 
 The mp4 files will be saved to `./vis/gen1_rnndet_small/pred/`.
+We pause the event sequences for 0.5s at every labeled frames for better see the detection results.
+The predicted bboxes (with predicted cls and obj scores) are in green, while the GT bboxes are in black.
+The frame index and timestamp are also shown at the top-left corner.
+See [gen1-video.mp4](../assets/gen1-video.mp4) for an example.
 
 ## Training
 
@@ -59,6 +63,7 @@ It is possible to get better results in this pre-training stage, as we did not t
 ### Generate pseudo dataset for self-training
 
 After obtaining a trained model (either trained on annotated data only, or after first-/second-round self-training), we can use it to generate pseudo labels on all unlabeled events for the next round of model training.
+Note that, TTA ensemble, low-score filtering, and tracking-based post-processing are all done in this step.
 
 The logic is simple, we run the model on the entire event sequence, and save the detection results in the same format as the original dataset.
 This way, we can use the same training pipeline to train the model on the pseudo dataset.
@@ -66,13 +71,13 @@ Note that labels are saved as `.npy` files, while the events are soft-linked ins
 The entire eval/test sets are also soft-linked.
 
 ```Bash
-# Gen1 (11376it, ~6h predict + ~30min saving on a T4 GPU)
+# Gen1 (11376it, ~7h on a T4 GPU, size is 100-150 MB)
 python predict.py model=pseudo_labeler dataset=gen1x0.01_ss dataset.path=./datasets/gen1/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen1-WSOD/rvt-s-gen1x0.01_ss.ckpt" \
   hardware.gpus=0 +experiment/gen1="small.yaml" model.postprocess.confidence_threshold=0.01 \
   tta.enable=True save_dir=./datasets/pseudo_gen1/gen1x0.01_ss-1round/train
 
-# Gen4 (27044it, ~9.5h predict + ~15min saving on a T4 GPU)
+# Gen4 (27044it, ~10h on a T4 GPU, size is 200-250 MB)
 python predict.py model=pseudo_labeler dataset=gen4x0.01_ss dataset.path=./datasets/gen4/ \
   checkpoint="pretrained/Sec.4.2-WSOD_SSOD/gen4-WSOD/rvt-s-gen4x0.01_ss.ckpt" \
   hardware.gpus=0 +experiment/gen4="small.yaml" model.postprocess.confidence_threshold=0.01 \
@@ -116,5 +121,16 @@ python train.py model=rnndet-soft hardware.gpus=[0,1] dataset=gen4x0.01_ss-1roun
   +experiment/gen4="small.yaml" training.max_steps=150000 training.learning_rate=0.0005
 ```
 
-Note that now we only train for 150k steps and can use a larger learning rate.
+Note that the model config here is `rnndet-soft`, which enables soft anchor assignment compared to vanilla `rnndet`.
+Also, we only train for 150k steps and can use a larger learning rate.
 This is because we have much denser annotations, which increases the effective batch size, and leads to faster convergence.
+
+## Troubleshooting
+
+In this project, there are two settings each with several different data ratios, and the base RVT model has different size variants.
+It is very easy to make mistakes when running commands.
+Here are some common error messages and their solutions:
+- If you see lots of shape mismatch errors when trying to load a pre-trained weight, it might be:
+  - You use the wrong model size (RVT-S vs RVT-B). Please check the `+experiment/gen1="xxx.yaml"` field;
+  - The dataset is wrong (e.g. testing a Gen1 trained model on 1Mpx). Please check the `dataset=xxx` field;
+- If you see AssertionError saying the data/pseudo label formats are wrong, it is likely that you set the wrong data path or the wrong dataset config.

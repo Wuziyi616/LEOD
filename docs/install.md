@@ -81,7 +81,7 @@ Please download the pre-trained weights from [Google Drive](https://drive.google
 The weights are grouped by the Section they are presented in the paper.
 They naming follows the pattern `rvt-{$MODEL_SIZE}-{$DATASET}x{$RATIO_OF_DATA}_{$SETTING}.ckpt`.
 
-For example, `rvt-s-gen1x0.02_ss.ckpt` is the RVT-S pre-trained on 2% of Gen1 data with the weakly-supervised setting.
-`rvt-s-gen4x0.05_ss-final.ckpt` is the RVT-S trained on 5% of 1Mpx data with the semi-supervised setting, and `-final` means it is the LEOD self-trained model.
+For example, `rvt-s-gen1x0.02_ss.ckpt` is the RVT-S pre-trained on 2% of Gen1 data under the weakly-supervised setting.
+`rvt-s-gen4x0.05_ss-final.ckpt` is the RVT-S trained on 5% of 1Mpx data under the semi-supervised setting, and `-final` means it is the LEOD self-trained model (used to produce the results in the paper).
 
 **Note:** it might be a bit confusing, but `ss` means weakly-supervised (all event sequences are sparsely labeled) and `seq` means semi-supervised (some event sequences are densely labeled, while others are completely unlabeled).
