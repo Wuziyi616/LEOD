@@ -1,0 +1,24 @@
+# This config is for pre-training RVT on limited annotated data
+
+defaults:
+  - base
+
+name: rnndet
+backbone:
+  name: ???
+fpn:
+  name: ???
+head:
+  name: ???
+  obj_focal_loss: False  # FocalLoss or BCE on objectness score
+  bbox_loss_weighting: ''  # 'obj' or 'cls' or 'objxcls' or ''
+  # support further transformations, e.g. 'cls-w**2' is using cls**2 as weights
+  ignore_bbox_thresh: null  # ignore bbox with obj/cls lower than this
+  ignore_label: 1024  # ignore during training
+  # don't suppress BG pixels with the highest k% confidence scores
+  ignore_bg_k: 0
+postprocess:
+  confidence_threshold: 0.1
+  nms_threshold: 0.45
+use_label_every: 1
+ignore_image: False  # ignore images where all bbox are with `ignore_label`

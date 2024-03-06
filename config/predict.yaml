@@ -1,0 +1,21 @@
+defaults:
+  - dataset: ???
+  - model: pseudo_labeler
+  - _self_
+
+is_train: False
+checkpoint: ???
+save_dir: "" # dir to save the generated dataset
+hardware:
+  num_workers:
+    eval: 8
+  gpus: 0 # GPU idx (multi-gpu not supported for validation)
+batch_size:
+  eval: 16
+training:
+  precision: 16
+tta:
+  enable: False
+  hflip: True
+  tflip: True
+use_gt: True # take GT labels on labeled frames, or still use pseudo labels

@@ -1,0 +1,9 @@
+defaults:
+  - gen1
+
+# time-flip data augmentation
+data_augmentation:
+  random:
+    prob_tflip: 0.5
+  stream:
+    prob_tflip: 0.5

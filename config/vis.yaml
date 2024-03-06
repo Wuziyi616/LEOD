@@ -1,0 +1,21 @@
+defaults:
+  - dataset: ???
+  - model: rnndet
+  - _self_
+
+is_train: False
+checkpoint: ???
+num_video: 5
+reverse: False
+hardware:
+  num_workers:
+    eval: 0
+  gpus: 0 # GPU idx (multi-gpu not supported for validation)
+batch_size:
+  eval: 1
+training:
+  precision: 16
+tta:
+  enable: False
+  hflip: False
+  tflip: False

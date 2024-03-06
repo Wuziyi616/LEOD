@@ -1,0 +1,53 @@
+name: ???
+path: ???
+ssod: False # for semi-supervised object detection, see `modifier.py`
+ratio: -1  # sub-sample the labeling frequency of each event sequence
+train_ratio: -1 # sub-sample the training set
+val_ratio: -1 # to accelerate the val process, currently takes ~20min
+test_ratio: -1 # to accelerate the test process, currently takes ~20min
+only_load_labels: False # only load the label, not the events
+reverse_event_order: False # reverse the temporal order of events
+train:
+  sampling: 'mixed' # ('random', 'stream', 'mixed')
+  random:
+    weighted_sampling: False
+  mixed:
+    w_stream: 1
+    w_random: 1
+eval:
+  sampling: 'stream'
+data_augmentation:
+  tflip_offset: -1
+  random:
+    prob_hflip: 0.5
+    prob_tflip: 0
+    rotate:
+      prob: 0
+      min_angle_deg: 2
+      max_angle_deg: 6
+    zoom:
+      prob: 0.8
+      zoom_in:
+        weight: 8
+        factor:
+          min: 1
+          max: 1.5
+      zoom_out:
+        weight: 2
+        factor:
+          min: 1
+          max: 1.2
+  stream:
+    start_from_zero: False
+    prob_hflip: 0.5
+    prob_tflip: 0
+    rotate:
+      prob: 0
+      min_angle_deg: 2
+      max_angle_deg: 6
+    zoom:
+      prob: 0.5
+      zoom_out:
+        factor:
+          min: 1
+          max: 1.2

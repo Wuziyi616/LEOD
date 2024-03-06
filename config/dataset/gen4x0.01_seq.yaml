@@ -1,0 +1,13 @@
+defaults:
+  - gen4
+
+train_ratio: 0.01
+val_ratio: 0.5
+sequence_length: 10  # longer is better for the pre-training (burn-in) stage
+
+# time-flip data augmentation
+data_augmentation:
+  random:
+    prob_tflip: 0.5
+  stream:
+    prob_tflip: 0.5

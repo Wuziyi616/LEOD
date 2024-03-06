@@ -1,0 +1,28 @@
+defaults:
+  - base
+
+name: pseudo_labeler
+backbone:
+  name: ???
+fpn:
+  name: ???
+head:
+  name: ???
+postprocess:
+  confidence_threshold: 0.1
+  nms_threshold: 0.45
+# SSOD-related configs
+pseudo_label:
+  # if a sub-seq `is_first_sample`, we skip predictions at the first `skip_first_t` timesteps
+  # because they don't have enough history information --> not accurate
+  skip_first_t: 0
+  # thresholds for filtering pseudo labels
+  obj_thresh: [0.6, 0.3]  # thresholds for each category
+  cls_thresh: [0.6, 0.3]  # gen1: ('car', 'ped'); gen4: ('ped', 'cyc', 'car')
+  # by default we will use the same thresholds for ped and cyc
+  # post-process using offline tracker, ignore bbox with short track length
+  min_track_len: 6
+  track_method: 'forward or backward'
+  # 'forward or backward' (short in both directions --> ignore)
+  inpaint: True  # hallucinate bbox at missing frames
+  ignore_label: 1024

@@ -1,0 +1,12 @@
+defaults:
+  - gen1
+
+train_ratio: 0.02
+val_ratio: 0.5
+
+# time-flip data augmentation
+data_augmentation:
+  random:
+    prob_tflip: 0.5
+  stream:
+    prob_tflip: 0.5
