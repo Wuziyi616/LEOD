@@ -43,7 +43,7 @@ To reproduce the results in the paper, please refer to [benchmark.md](docs/bench
 
 Please cite our paper if you find it useful in your research:
 ```bibtex
-@inproceedings{wu2023leod,
+@inproceedings{wu2024leod,
   title={LEOD: Label-Efficient Object Detection for Event Cameras},
   author={Wu, Ziyi and Gehrig, Mathias and Lyu, Qing and Liu, Xudong and Gilitschenski, Igor},
   booktitle={CVPR},
