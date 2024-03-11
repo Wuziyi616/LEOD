@@ -37,6 +37,7 @@ Please refer to [install.md](./docs/install.md) for detailed instructions.
 
 **This codebase is tailored to [Slurm](https://slurm.schedmd.com/documentation.html) GPU clusters with preemption mechanism.**
 There are some functions in the code (e.g. auto-detect and load previous checkpoints) which you might not need.
+Please go through all fields marked with `TODO` in `train.py` in case there is any conflict with your environment.
 To reproduce the results in the paper, please refer to [benchmark.md](docs/benchmark.md).
 
 ## Citation

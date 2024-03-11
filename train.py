@@ -36,6 +36,9 @@ from nerv.utils import sort_file_by_time, glob_all
 
 def get_exp_name(config: DictConfig):
     """Compose the name used in wandb run's name and ckp path."""
+    # TODO: this is a bit hacky as it assumes you don't modify anything about
+    # dataset or model in the command. If you set e.g. `dataset.xxx=xxx`, this
+    # will break. You can hardcode the exp_name in that case.
     # dataset
     dst_name = OmegaConf.from_cli()['dataset']
     assert config.dataset.name in dst_name
@@ -69,6 +72,7 @@ def detect_ckpt(ckpt_path: str):
     """Automatically detect checkpoints in the ckpt_path.
     Useful in SLURM preemption systems.
     """
+    # TODO: this may be unwanted if you wish to load a specific checkpoint.
     last_ckpt = None
 
     # automatically detect checkpoints
@@ -137,6 +141,8 @@ def main(config: DictConfig):
     # Logging and Checkpoints
     # ---------------------
     # cluster-specific
+    # TODO: the if will be False if you are not using cluster. Instead, it will
+    # create a checkpoint directory in the current folder.
     SLURM_JOB_ID = os.environ.get('SLURM_JOB_ID')
     CHECKPOINT = './checkpoint/'
     exp_name = get_exp_name(config)

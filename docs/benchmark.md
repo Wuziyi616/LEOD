@@ -22,6 +22,11 @@ python val.py model=rnndet dataset=gen4 dataset.path=./datasets/gen4/ \
 
 We also support the `reverse` flag which tests the model on event sequences in the reverse-time order, and `tta.enable` which enables Test-Time Augmentation (model prediction ensembled over horizontal and temporal flip).
 
+**Note:** the `model.postprocess.confidence_threshold` field makes some differences in the final mAP (~1% on Gen1 and up to 3% on 1Mpx), depending on how many false positives your model generates.
+In the model training below, we use wandb to log intermediate results including mAP.
+They are usually lower than the final results because we use a higher confidence threshold to speed up inference.
+To obtain the final mAP, make sure to run the above evaluation commands.
+
 ### Visualize the detection results
 
 You can apply RVT to the entire event sequence and get continuous detection results as videos:
